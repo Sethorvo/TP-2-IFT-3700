@@ -1,9 +1,9 @@
 import pandas as pd
 
-#Fonction pour imprimer et tester la validite du dataframe
-url = ""
+#Importe le premier facile, je le garde comme exemple
+url = "https://en.wikipedia.org/wiki/List_of_countries_by_average_yearly_temperature"
 table = pd.read_html(url)[0]
-colonne = table[table.columns[2]]
+colonne = table[table.columns[1]]
 print(colonne)
 
 #Implementation pour les quarante liens
@@ -33,13 +33,11 @@ url_array = ["https://en.wikipedia.org/wiki/List_of_countries_by_GDP_(nominal)_p
 # table_array = [0,0,0,1,4,1,5,1,4,7,
 # 3,0,34,0,1,2,0,1,0,1,
 # 2,0,0,5,0,1,0,1,1,1,
-# 0,1,,,,,,,,,
-# ]
+# 0,1,0,0,0,0,0,0,0,0]
 # colonne_array = [6,2,2,3,2,3,5,1,2,2,
 # 3,2,?,2,1,2,4,7,2,1,
 # 2,1,1,?,3,2,2,6,1,1,
-# 3,5,,,,,,,,,
-# ]
+# 3,5,2,1,3,3,3,3,2,1]
 
 # df = pd.DataFrame()
 # #Rappel : la liste de dev humain a plus les données de 2019
