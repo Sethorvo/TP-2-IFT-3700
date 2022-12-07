@@ -1,10 +1,16 @@
 import pandas as pd
+import numpy as np
 
 #Importe le premier facile, je le garde comme exemple
-url = "https://en.wikipedia.org/wiki/List_of_countries_by_average_yearly_temperature"
-table = pd.read_html(url)[0]
-colonne = table[table.columns[1]]
-print(colonne)
+
+
+# url = "https://en.wikipedia.org/wiki/List_of_countries_by_GDP_(nominal)_per_capita"
+# table = pd.read_html(url)[1]
+# colonne = table[table.columns[6]]
+# print(colonne)
+
+
+
 
 #Implementation pour les quarante liens
 
@@ -30,39 +36,68 @@ url_array = ["https://en.wikipedia.org/wiki/List_of_countries_by_GDP_(nominal)_p
              "https://en.wikipedia.org/wiki/List_of_countries_by_food_energy_intake","https://en.wikipedia.org/wiki/List_of_countries_by_average_yearly_temperature",
 ]
 
-# table_array = [0,0,0,1,4,1,5,1,4,7,
-# 3,0,34,0,1,2,0,1,0,1,
-# 2,0,0,5,0,1,0,1,1,1,
-# 0,1,0,0,0,0,0,0,0,0]
-# colonne_array = [6,2,2,3,2,3,5,1,2,2,
-# 3,2,?,2,1,2,4,7,2,1,
-# 2,1,1,?,3,2,2,6,1,1,
-# 3,5,2,1,3,3,3,3,2,1]
+table_array = [1,0,0,1,4,1,5,1,4,7,
+3,0,34,0,1,2,0,1,0,1,
+2,0,0,5,0,1,0,0,1,1,
+0,1,0,0,0,0,0,0,0,0]
+colonne_array = [6,2,2,3,2,3,5,1,2,2,
+3,2,1001,1,1,2,4,7,2,1,
+2,1,1,1001,3,2,2,6,1,1,
+3,5,2,1,3,3,3,3,2,1]
 
-# df = pd.DataFrame()
-# #Rappel : la liste de dev humain a plus les données de 2019
-# for i in range(40):
-#     url = url_array[i]
-#     table_i = table_array[i]
-#     colonne_i = colonne_array[i]
-
-#     table = pd.read_html(url)[table_i]
-#     colonne = table[table.columns[colonne_i]]
+liste_pays_not0 = [1,4,5,6,8,20,25,27,35,36,37,38]
+list_vrai_index = [1,1,2,2,1,1,1,1,2,1,1,1]
 
 
-# if i == 4 :
-# colonne = colonne.truncate(3,17)
+# for i in liste_pays_not0 :
+#     table = pd.read_html(url_array[i])[table_array[i]]
+#     if i == 5 or i==6 or i==35:
+#         label = table.iloc[:,2]
+#     else :
+#         label = table.iloc[:,1]
 
-# if i == 32:
-#     url = url_array[i]
-#     resultat = []
-
-#     for j in range(5):
-#         afr = pd.read_html(url)[j]
-#         col_df = afr[afr.columns[2]]
-#         resultat.append(col_df)
-#     colonne = pd.concat(resultat, axis=0)
+#     print("Voila l'index de la talbe " + str(i))
+#     print(label)
 
 
-#   df.insert(i,"colonne", colonne)
+def get_colonnes() :
+    df = pd.DataFrame()
+    table = pd.read_html(url_array[0])[1]
+    label = table[table.columns[0]]
+    label = label.truncate(1,224)
+    df.index = label
+    display(df)
+    for i in range(40):
+        url = url_array[i]
+        table_i = table_array[i]
+        colonne_i = colonne_array[i]
 
+        if colonne_i == 1001:
+            continue
+        else :
+            table = pd.read_html(url)[table_i]
+            colonne = table[table.columns[colonne_i]]
+
+
+            if i == 4 :
+                colonne = colonne.truncate(3,17)
+
+            if i == 32:
+                url = url_array[i]
+                resultat = []
+
+                for j in range(5):
+                    afr = pd.read_html(url)[j]
+                    col_df = afr[afr.columns[2]]
+                    col_arr = col_df.to_numpy()
+                    for k in col_arr:
+                        resultat.append(k)
+
+                colonne = pd.DataFrame({'col':resultat})
+
+
+            df[str(i)] = colonne
+
+    print(df.to_string())
+
+get_colonnes()
