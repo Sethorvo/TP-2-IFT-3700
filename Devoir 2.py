@@ -45,42 +45,52 @@ colonne_array = [6,2,2,3,2,3,5,1,2,2,
 2,1,1,1001,3,2,2,6,1,1,
 3,5,2,1,3,3,3,3,2,1]
 
-liste_pays_not0 = [1,4,5,6,8,20,25,27,35,36,37,38]
-list_vrai_index = [1,1,2,2,1,1,1,1,2,1,1,1]
+label_u = [1,4,8,20,25,27,36,37,38]
+label_d = [5,6,35]
 
-
-# for i in liste_pays_not0 :
-#     table = pd.read_html(url_array[i])[table_array[i]]
-#     if i == 5 or i==6 or i==35:
-#         label = table.iloc[:,2]
-#     else :
-#         label = table.iloc[:,1]
-
-#     print("Voila l'index de la talbe " + str(i))
-#     print(label)
 
 
 def get_colonnes() :
     df = pd.DataFrame()
     table = pd.read_html(url_array[0])[1]
-    label = table[table.columns[0]]
-    label = label.truncate(1,224)
-    df.index = label
-    display(df)
+    labels = table[table.columns[0]]
+    labels = labels.truncate(1,224)
+    df.index = labels
+
+
     for i in range(40):
         url = url_array[i]
         table_i = table_array[i]
         colonne_i = colonne_array[i]
 
+
         if colonne_i == 1001:
             continue
+
         else :
-            table = pd.read_html(url)[table_i]
+            table = pd.read_html(url, na_values="-")[table_i]
+
+            if i in label_u :
+                label = table[table.columns[1]]
+
+            elif i in label_d:
+                label = table[table.columns[2]]
+
+            else :
+                label = table[table.columns[0]]
+
+
+            
             colonne = table[table.columns[colonne_i]]
 
-
+            #Le truncate sert a enlever des colonnes nan vide et des index dupliques
             if i == 4 :
                 colonne = colonne.truncate(3,17)
+                label = label.truncate(3,17)
+
+            if i == 20:
+                colonne = colonne.truncate(0,201)
+                label = label.truncate(0,201)
 
             if i == 32:
                 url = url_array[i]
@@ -94,8 +104,9 @@ def get_colonnes() :
                         resultat.append(k)
 
                 colonne = pd.DataFrame({'col':resultat})
-
-
+            
+            colonne.index = label
+            print(df.index.duplicated())
             df[str(i)] = colonne
 
     print(df.to_string())
