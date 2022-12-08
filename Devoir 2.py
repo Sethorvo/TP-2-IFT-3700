@@ -48,7 +48,7 @@ url_array = ["https://en.wikipedia.org/wiki/List_of_countries_by_GDP_(nominal)_p
              "https://en.wikipedia.org/wiki/List_of_countries_by_spending_on_education_(%25_of_GDP)",
              "https://en.wikipedia.org/wiki/List_of_countries_by_homeless_population",
              "https://en.wikipedia.org/wiki/List_of_countries_by_milk_consumption_per_capita",
-             "https://en.wikipedia.org/wiki/List_of_countries_by_food_energy_intake",
+             "https://en.wikipedia.org/wiki/List_of_countries_by_number_of_scientific_and_technical_journal_articles",
              "https://en.wikipedia.org/wiki/Books_published_per_country_per_year",
              "https://en.wikipedia.org/wiki/List_of_countries_by_food_energy_intake",
              "https://en.wikipedia.org/wiki/List_of_countries_by_average_yearly_temperature",
@@ -75,7 +75,7 @@ def get_colonnes():
     # Prend la liste des pays et territoire de la page du pib commme label de depart pour les range
     table = pd.read_html(url_array[0])[1]
     labels = table[table.columns[0]].truncate(1, 223)
-    labels = labels.str.replace('\s.+', '', regex=True)
+    labels = labels.str.replace('[^a-zA-Z]', '', regex=True)
     labels = labels.truncate(1)
     df.index = labels
 
