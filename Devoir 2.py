@@ -91,6 +91,9 @@ def get_colonnes():
         else:
             table = pd.read_html(url)[table_i]
 
+            #to do temporaire pour debugger, les noms doivent être corriger
+            column_name = table.columns[colonne_i]
+
             # Va chercher le nom des pays pour la colonne que l'on extrait
             if i in label_u:
                 label = table[table.columns[1]]
@@ -101,7 +104,7 @@ def get_colonnes():
             else:
                 label = table[table.columns[0]]
 
-            colonne = table[table.columns[colonne_i]]
+            colonne = table[column_name]
 
             # Le truncate sert a enlever des colonnes nan vide et des index dupliques
             if i == 4:
@@ -142,7 +145,16 @@ def get_colonnes():
 
             colonne.index = label
             colonne.index = colonne.index.str.replace('[^a-zA-Z]', '', regex=True)
-            df[str(i)] = colonne
+            df[column_name] = colonne
+
+    #enlever toutes les pays avec 12 ou plus valeur manquante
+
+    list_of_missing_country = []
+    for i in range(len(df.index)):
+        if df.iloc[i].isnull().sum() > 11:
+            list_of_missing_country.append(df.iloc[i].name)
+
+    df = df.drop(list_of_missing_country)
 
     print(df.to_string())
 
