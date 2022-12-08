@@ -148,7 +148,7 @@ def get_colonnes():
             df[column_name] = colonne
 
     df = clean_data(df)
-    # doit transformer les données % en nombre
+    # convert_data_float(df)
     # replace_missing_datas(df)
     print(df.to_string())
 
@@ -170,6 +170,21 @@ def replace_missing_datas(df: pd.DataFrame):
 
     print(dict_median)
 
+
+def convert_data_float(df: pd.DataFrame):
+    for column in df:
+
+        # find first not value as null
+        first_value_not_null = 0;
+        for i in range(len(df.index)):
+            if df[column].iloc[i] is not np.nan:
+                first_value_not_null = i
+                break;
+
+        if df[column].iloc[first_value_not_null][-1] == "%":
+            df[column] = df[column].str.rstrip('%').astype('float') / 100.0
+        else:
+            df[column] = df[column].astype('float')
 
 
 if __name__ == '__main__':
