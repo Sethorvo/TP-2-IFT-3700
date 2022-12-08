@@ -91,7 +91,7 @@ def get_colonnes():
         else:
             table = pd.read_html(url)[table_i]
 
-            #to do temporaire pour debugger, les noms doivent être corriger
+            # to do temporaire pour debugger, les noms doivent être corriger
             column_name = table.columns[colonne_i]
 
             # Va chercher le nom des pays pour la colonne que l'on extrait
@@ -147,16 +147,29 @@ def get_colonnes():
             colonne.index = colonne.index.str.replace('[^a-zA-Z]', '', regex=True)
             df[column_name] = colonne
 
-    #enlever toutes les pays avec 12 ou plus valeur manquante
+    df = clean_data(df)
+    # doit transformer les données % en nombre
+    # replace_missing_datas(df)
+    print(df.to_string())
 
+
+def clean_data(df: pd.DataFrame):
+    # enlever toutes les pays avec 12 ou plus valeur manquante
     list_of_missing_country = []
     for i in range(len(df.index)):
         if df.iloc[i].isnull().sum() > 11:
             list_of_missing_country.append(df.iloc[i].name)
 
-    df = df.drop(list_of_missing_country)
+    return df.drop(list_of_missing_country)
 
-    print(df.to_string())
+
+def replace_missing_datas(df: pd.DataFrame):
+    dict_median = {}
+    for column in df:
+        dict_median[column] = df[column].median()
+
+    print(dict_median)
+
 
 
 if __name__ == '__main__':
