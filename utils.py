@@ -5,7 +5,7 @@ def getCor(data):
     return np.corrcoef(data)
 
 def getStrongestCorr(corr_matrix):
-    return corr_matrix.max(axis=0)
+    return corr_matrix.max(axis=1)
 
 def getOrderCorr(corr_matrix):
     corr_matrix = np.abs(corr_matrix) # get absolute values
