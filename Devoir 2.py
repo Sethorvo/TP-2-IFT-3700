@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from CorrectionDatas import convert_data_float, clean_data, replace_missing_datas
 
 # Importe le premier facile, je le garde comme fonction de test pour imprimer une colonne
 
@@ -79,7 +80,7 @@ def get_colonnes():
     labels = labels.truncate(1)
     df.index = labels
 
-    for i in range(40):
+    for i in range(len(url_array)):
         url = url_array[i]
         table_i = table_array[i]
         colonne_i = colonne_array[i]
@@ -147,44 +148,10 @@ def get_colonnes():
             colonne.index = colonne.index.str.replace('[^a-zA-Z]', '', regex=True)
             df[column_name] = colonne
 
+    convert_data_float(df)
     df = clean_data(df)
-    # convert_data_float(df)
-    # replace_missing_datas(df)
+    replace_missing_datas(df)
     print(df.to_string())
-
-
-def clean_data(df: pd.DataFrame):
-    # enlever toutes les pays avec 12 ou plus valeur manquante
-    list_of_missing_country = []
-    for i in range(len(df.index)):
-        if df.iloc[i].isnull().sum() > 11:
-            list_of_missing_country.append(df.iloc[i].name)
-
-    return df.drop(list_of_missing_country)
-
-
-def replace_missing_datas(df: pd.DataFrame):
-    dict_median = {}
-    for column in df:
-        dict_median[column] = df[column].median()
-
-    print(dict_median)
-
-
-def convert_data_float(df: pd.DataFrame):
-    for column in df:
-
-        # find first not value as null
-        first_value_not_null = 0;
-        for i in range(len(df.index)):
-            if df[column].iloc[i] is not np.nan:
-                first_value_not_null = i
-                break;
-
-        if df[column].iloc[first_value_not_null][-1] == "%":
-            df[column] = df[column].str.rstrip('%').astype('float') / 100.0
-        else:
-            df[column] = df[column].astype('float')
 
 
 if __name__ == '__main__':
