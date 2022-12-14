@@ -38,11 +38,9 @@ def clean_data(df: pd.DataFrame):
 
 
 def replace_missing_datas(df: pd.DataFrame):
-    dict_median = {}
     for column in df:
-        dict_median[column] = df[column].median()
-
-    print(dict_median)
+        median = df[column].median()
+        df[column] = df[column].fillna(median)
 
 
 def convert_data_float(df: pd.DataFrame):
@@ -58,7 +56,6 @@ def convert_data_float(df: pd.DataFrame):
             df[column] = df[column].str.replace('−', '-')
             # age fédéral pour usa
             df[column] = df[column].str.replace('varies by state', '11')
-
 
         is_percent = False
         for i in range(len(df.index)):
