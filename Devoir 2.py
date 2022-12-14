@@ -1,5 +1,5 @@
 import pandas as pd
-import numpy as np
+
 from CorrectionDatas import convert_data_float, clean_data, replace_missing_datas
 
 # Importe le premier facile, je le garde comme fonction de test pour imprimer une colonne

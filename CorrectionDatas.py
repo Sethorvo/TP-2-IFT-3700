@@ -2,8 +2,16 @@ import numpy as np
 import pandas as pd
 
 
-def read_interval(df: pd.DataFrame):
-    pass
+def read_interval(value_in_string: str):
+    # interval entre 0 et la valeur
+    if value_in_string[0] == "<":
+        return (float(value_in_string[1:])) / 2
+
+    values = value_in_string.split("–")
+    if len(values) == 2:
+        return (float(values[0]) + float(values[1])) / 2
+
+    return value_in_string
 
 
 def clean_data(df: pd.DataFrame):
@@ -26,21 +34,23 @@ def replace_missing_datas(df: pd.DataFrame):
 
 def convert_data_float(df: pd.DataFrame):
     for column in df:
-
+        # delete all character that made cast impossible and are not usefull
         if df[column].dtype == np.object or df[column].dtype == np.string_:
             df[column] = df[column].str.rstrip('*')
             df[column] = df[column].str.rstrip('[1]')
-        # find first not value as null
-        is_pourcent = False
 
+        is_percent = False
         for i in range(len(df.index)):
-            # change special character or empty row making cast impossible
-            if df[column].iloc[i] == '—' or df[column].iloc[i] == '–' or df[column].iloc[i] == '':
-                df[column].iloc[i] = np.nan
-            #
-            is_pourcent = is_pourcent or (isinstance(df[column].iloc[i], str) and df[column].iloc[i][-1] == "%")
+            if isinstance(df[column].iloc[i], str):
+                if df[column].iloc[i] == '—' or df[column].iloc[i] == '–' or df[column].iloc[i] == '':
+                    # change special character or empty row making cast impossible
+                    df[column].iloc[i] = np.nan
+                else:
+                    # % and interval making cast impossible but some special rule as to be apply
+                    is_percent = is_percent or df[column].iloc[i][-1] == "%"
+                    df[column].iloc[i] = read_interval(df[column].iloc[i])
 
-        if is_pourcent:
+        if is_percent:
             df[column] = df[column].str.rstrip('%').astype('float') / 100.0
         else:
             df[column] = df[column].astype('float')
