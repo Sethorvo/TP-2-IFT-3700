@@ -59,7 +59,8 @@ dict_wiki = {
         0, 3, 1, False, False, False),
     'https://en.wikipedia.org/wiki/Books_published_per_country_per_year': (0, 3, 1, False, False, False),
     'https://en.wikipedia.org/wiki/List_of_countries_by_food_energy_intake': (0, 2, 1, False, False, False),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_average_yearly_temperature': (0, 1, 0, False, False, False)}
+    'https://en.wikipedia.org/wiki/List_of_countries_by_average_yearly_temperature': (0, 1, 0, False, False, False)
+}
 
 
 def get_colonnes():
@@ -129,7 +130,7 @@ def get_colonnes():
 
             colonne.index = label
             colonne.index = colonne.index.str.replace('[^a-zA-Z]', '', regex=True)
-            df[column_name] = colonne
+            df[key] = colonne
 
     convert_data_float(df)
     df = clean_data(df)
