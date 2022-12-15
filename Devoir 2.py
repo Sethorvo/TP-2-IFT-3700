@@ -111,31 +111,24 @@ def get_colonnes():
 
             # Ajoute les differents tableaux de la page en un, une des consignes du prof
             elif values[3] == "Age de premier marriage":
-                # Pour l'instant les labels sont pas reconnus comme des strings je sais pas pourquoi, a voir
-                continue
                 url = key
                 resultat = []
-                label_r = []
+                label = []
 
                 for j in range(5):
                     afr = pd.read_html(url)[j]
-
                     lab_df = afr[afr.columns[0]]
+                    lab_df = lab_df.str.replace('\[.*', '', regex=True)
+                    lab_df = lab_df.str.replace('\s\(.*', '', regex=True)
                     col_df = afr[afr.columns[2]]
-
                     lab_arr = lab_df.to_numpy()
                     col_arr = col_df.to_numpy()
 
                     for k in range(len(col_arr)):
-                        label_r.append(lab_arr[k])
+                        label.append(lab_arr[k])
                         resultat.append(col_arr[k])
 
-                colonne = pd.DataFrame({'col': resultat})
-                label = pd.DataFrame({'id': label_r})
-                label = label.str.replace('[^a-zA-Z]', '', regex=True)
-                colonne.index = label
-                df[str(i)] = colonne
-                continue
+                colonne = pd.DataFrame({"Age de premier marriage": resultat})
 
         colonne.index = label
         colonne.index = colonne.index.str.replace('[^a-zA-Z]', '', regex=True)
