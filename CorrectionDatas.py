@@ -73,3 +73,8 @@ def convert_data_float(df: pd.DataFrame):
             df[column] = df[column].str.rstrip('%').astype('float') / 100.0
         else:
             df[column] = df[column].astype('float')
+
+
+def describe_data(df: pd.DataFrame):
+    describe = df.describe(percentiles=[0.5], include='all')
+    return describe

@@ -1,13 +1,13 @@
 import pandas as pd
 
-from CorrectionDatas import convert_data_float, clean_data, replace_missing_datas
+from CorrectionDatas import convert_data_float, clean_data, replace_missing_datas, describe_data
 
 # Importe le premier facile, je le garde comme fonction de test pour imprimer une colonne
 
 # url = "https://en.wikipedia.org/wiki/List_of_countries_by_number_of_Internet_users"
 # table = pd.read_html(url)[5]
 # m = pd.read_csv("tableau.csv")
-# print(m.to_string())
+# print(m.columns)
 
 
 
@@ -27,17 +27,14 @@ dict_wiki = {
     'https://en.wikipedia.org/wiki/Islam_by_country': (3, 3, 0, "% de musulmans"),
     'https://en.wikipedia.org/wiki/Buddhism_by_country': (0, 2, 0, "% de bouddhistes"),
     'https://en.wikipedia.org/wiki/Jewish_population_by_country': (34, -1, 0, "% de juifs"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_infant_and_under-five_mortality_rates': (
-        0, 1, 0, "Mortalité en dessous de 5 ans (mort/1k naissance)"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_infant_and_under-five_mortality_rates': (0, 1, 0, "Mortalité en dessous de 5 ans (mort/1k naissance)"),
     'https://en.wikipedia.org/wiki/Age_of_criminal_responsibility': (1, 1, 0,  "Age de responsabilité criminelle"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_minimum_wage': (2, 2, 0, "Salaire minimum annuel"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_external_debt': (0, 4, 0,  "Dette externe en % de PIB"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_income_equality': (1, 7, 0, "Indice de Gini en %"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_total_health_expenditure_per_capita': (
-        0, 2, 0, "Dépense en santé par capita"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_total_health_expenditure_per_capita': (0, 2, 0, "Dépense en santé par capita"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_suicide_rate': (1, 1, 0,  "Taux de suicide"),
-    'https://en.wikipedia.org/wiki/List_of_sovereign_states_and_dependencies_by_total_fertility_rate': (
-        2, 2, 1, "Taux de fertilité"),
+    'https://en.wikipedia.org/wiki/List_of_sovereign_states_and_dependencies_by_total_fertility_rate': (2, 2, 1, "Taux de fertilité"),
     'https://en.wikipedia.org/wiki/Tobacco_consumption_by_country': (0, 1, 0, "Consommateur de tabac chez 15+"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_obesity_rate': (0, 1, 0, "Taux d'obésité"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_number_of_Internet_users': (5, -1, 0, "Taux d'utilisateur d'Internet"),
@@ -73,6 +70,7 @@ def get_colonnes():
 
     for key, values in dict_wiki.items():
         url = key
+        print(values[3])
         table_i = values[0]
         colonne_i = values[1]
         table = pd.read_html(url)[table_i]
@@ -137,7 +135,9 @@ def get_colonnes():
     convert_data_float(df)
     df = clean_data(df)
     replace_missing_datas(df)
+    describe = describe_data(df)
     print(df.to_string())
+    print(describe.to_string())
 
 
 if __name__ == '__main__':
