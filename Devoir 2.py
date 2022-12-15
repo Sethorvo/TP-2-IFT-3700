@@ -4,12 +4,11 @@ from CorrectionDatas import convert_data_float, clean_data, replace_missing_data
 
 # Importe le premier facile, je le garde comme fonction de test pour imprimer une colonne
 
-# url = "https://en.wikipedia.org/wiki/List_of_countries_by_GDP_(nominal)_per_capita"
-# table = pd.read_html(url)[1]
-# colonne = table[table.columns[6]]
-# colonne = colonne.truncate(1,223)
-# colonne.index = table[table.columns[0]].truncate(1,223)
-# colonne.index = colonne.index.str.replace('[^a-zA-Z]', '', regex=True)
+# url = "https://en.wikipedia.org/wiki/List_of_countries_by_number_of_Internet_users"
+# table = pd.read_html(url)[5]
+# m = pd.read_csv("tableau.csv")
+# print(m.to_string())
+
 
 
 # Implementation pour les quarante liens
@@ -24,7 +23,7 @@ dict_wiki = {
     'https://en.wikipedia.org/wiki/Democracy_Index': (5, 5, 2, "Index de démocratie"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_tertiary_education_attainment': (1, 1, 0, "% d'éducation tertiare de 2 ans atteint"),
     'https://en.wikipedia.org/wiki/Importance_of_religion_by_country': (4, 2, 1, "% d'importance de la religion"),
-    'https://en.wikipedia.org/wiki/Christianity_by_country': (7, 2, 0, "% de chrétiens"),
+    # 'https://en.wikipedia.org/wiki/Christianity_by_country': (7, 2, 0, "% de chrétiens"),
     'https://en.wikipedia.org/wiki/Islam_by_country': (3, 3, 0, "% de musulmans"),
     'https://en.wikipedia.org/wiki/Buddhism_by_country': (0, 2, 0, "% de bouddhistes"),
     'https://en.wikipedia.org/wiki/Jewish_population_by_country': (34, -1, 0, "% de juifs"),
@@ -70,23 +69,32 @@ def get_colonnes():
     labels = labels.truncate(1)
     df.index = labels
 
+    manquant = pd.read_csv("tableau.csv")
+
     for key, values in dict_wiki.items():
         url = key
         table_i = values[0]
         colonne_i = values[1]
+        table = pd.read_html(url)[table_i]
+        label = table[table.columns[values[2]]]
 
-        # Saute les deux liens ou je n'arrive a pas a obtenir les colonnes
+        # Importe du csv les deux colonnes manquantes
         if colonne_i == -1:
-            continue
+
+            if values[3] == "% de juifs":
+                label = label.str.replace('\[.*', '', regex=True)
+                colonne = manquant[manquant.columns[0]]
+                colonne = colonne.truncate(0, 111)
+
+            elif values[3]== "Taux d'utilisateur d'Internet":
+                colonne = manquant[manquant.columns[1]]
 
         else:
-            table = pd.read_html(url)[table_i]
 
             # to do temporaire pour debugger, les noms doivent être corriger
             column_name = table.columns[colonne_i]
 
             # Va chercher le nom des pays pour la colonne que l'on extrait
-            label = table[table.columns[values[2]]]
             colonne = table[column_name]
 
             # Le truncate sert a enlever des colonnes nan vide et des index dupliques
@@ -100,7 +108,6 @@ def get_colonnes():
 
             elif values[3] == "% de chrétiens":
                 label = label.str.replace('(details)', '', regex=True)
-
 
             # Ajoute les differents tableaux de la page en un, une des consignes du prof
             elif values[3] == "Age de premier marriage":
@@ -130,9 +137,9 @@ def get_colonnes():
                 df[str(i)] = colonne
                 continue
 
-            colonne.index = label
-            colonne.index = colonne.index.str.replace('[^a-zA-Z]', '', regex=True)
-            df[values[3]] = colonne
+        colonne.index = label
+        colonne.index = colonne.index.str.replace('[^a-zA-Z]', '', regex=True)
+        df[values[3]] = colonne
 
     convert_data_float(df)
     df = clean_data(df)
