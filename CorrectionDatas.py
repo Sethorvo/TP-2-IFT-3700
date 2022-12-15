@@ -49,11 +49,11 @@ def convert_data_float(df: pd.DataFrame):
         if df[column].dtype == np.object or df[column].dtype == np.string_:
             df[column] = df[column].str.rstrip('*')
             df[column] = df[column].str.rstrip('+')
-            df[column] = df[column].str.replace(',000', '000')
-            df[column] = df[column].str.replace(' \(boys\)', '')
-            df[column] = df[column].str.replace(' \(girls\), ', '-')
-            df[column] = df[column].str.replace(r'\[.*\]', '')
-            df[column] = df[column].str.replace('−', '-')
+            df[column] = df[column].str.replace(',000', '000', regex=True)
+            df[column] = df[column].str.replace(' \(boys\)', '', regex=True)
+            df[column] = df[column].str.replace(' \(girls\), ', '-', regex=True)
+            df[column] = df[column].str.replace(r'\[.*\]', '', regex=True)
+            df[column] = df[column].str.replace('−', '-', regex=True)
             # age fédéral pour usa
             df[column] = df[column].str.replace('varies by state', '11')
 
