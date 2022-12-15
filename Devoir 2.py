@@ -14,7 +14,7 @@ from CorrectionDatas import convert_data_float, clean_data, replace_missing_data
 
 # Implementation pour les quarante liens
 # key == site, values == ( table position, column values position, column name position , ==4, ==20, == 32
-ict_wiki = {
+dict_wiki = {
     'https://en.wikipedia.org/wiki/List_of_countries_by_GDP_(nominal)_per_capita': (1, 6, 0, "PIB par capita"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_Internet_connection_speeds': (0, 2, 1, "Vitesse de téléchargement (Mb/s) moyenne"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_alcohol_consumption_per_capita': (0, 2, 0, "Litres d'alcool consommé par an, par capita chez 15+"),
@@ -24,7 +24,7 @@ ict_wiki = {
     'https://en.wikipedia.org/wiki/Democracy_Index': (5, 5, 2, "Index de démocratie"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_tertiary_education_attainment': (1, 1, 0, "% d'éducation tertiare de 2 ans atteint"),
     'https://en.wikipedia.org/wiki/Importance_of_religion_by_country': (4, 2, 1, "% d'importance de la religion"),
-    'https://en.wikipedia.org/wiki/Christianity_by_country': (7, 0, 0, "% de chrétiens"),
+    'https://en.wikipedia.org/wiki/Christianity_by_country': (7, 2, 0, "% de chrétiens"),
     'https://en.wikipedia.org/wiki/Islam_by_country': (3, 3, 0, "% de musulmans"),
     'https://en.wikipedia.org/wiki/Buddhism_by_country': (0, 2, 0, "% de bouddhistes"),
     'https://en.wikipedia.org/wiki/Jewish_population_by_country': (34, -1, 0, "% de juifs"),
@@ -51,12 +51,10 @@ ict_wiki = {
     'https://en.wikipedia.org/wiki/List_of_countries_by_incarceration_rate': (0, 3, 0, "Taux d'incarcération par 100k"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_literacy_rate': (1, 5, 0, "Taux d'alphabétisation"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_age_at_first_marriage': (0, 2, 0, "Age de premier marriage"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_spending_on_education_(%25_of_GDP)': (
-        0, 1, 0,  "Dépense en éducation, % du PIB"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_spending_on_education_(%25_of_GDP)': (0, 1, 0, "Dépense en éducation, % du PIB"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_homeless_population': (0, 3, 0, "Taux d'itinérance par 100k"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_milk_consumption_per_capita': (0, 3, 2, "Consommation de lait par capita"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_number_of_scientific_and_technical_journal_articles': (
-        0, 3, 1, "Nombre d'articles scientifique par capita"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_number_of_scientific_and_technical_journal_articles': (0, 3, 1, "Nombre d'articles scientifique par capita"),
     'https://en.wikipedia.org/wiki/Books_published_per_country_per_year': (0, 3, 1, "Livres publiés par année"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_food_energy_intake': (0, 2, 1, "Consommation de nourriture en kilocalories"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_average_yearly_temperature': (0, 1, 0, "Température annuelle moyenne")
@@ -92,16 +90,20 @@ def get_colonnes():
             colonne = table[column_name]
 
             # Le truncate sert a enlever des colonnes nan vide et des index dupliques
-            if values[3]:
+            if values[3] == "%PIB dépensé dans le militaire":
                 colonne = colonne.truncate(3, 17)
                 label = label.truncate(3, 17)
 
-            elif values[4]:
+            elif values[3] == "Taux de fertilité":
                 colonne = colonne.truncate(0, 201)
                 label = label.truncate(0, 201)
 
+            elif values[3] == "% de chrétiens":
+                label = label.str.replace('(details)', '', regex=True)
+
+
             # Ajoute les differents tableaux de la page en un, une des consignes du prof
-            elif values[5]:
+            elif values[3] == "Age de premier marriage":
                 # Pour l'instant les labels sont pas reconnus comme des strings je sais pas pourquoi, a voir
                 continue
                 url = key
