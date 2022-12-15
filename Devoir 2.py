@@ -70,7 +70,6 @@ def get_colonnes():
 
     for key, values in dict_wiki.items():
         url = key
-        print(values[3])
         table_i = values[0]
         colonne_i = values[1]
         table = pd.read_html(url)[table_i]
@@ -137,7 +136,6 @@ def get_colonnes():
     replace_missing_datas(df)
     describe = describe_data(df)
     print(df.to_string())
-    print(describe.to_string())
 
 
 if __name__ == '__main__':
