@@ -15,3 +15,13 @@ def find_biggest_correlation(df: pd.DataFrame):
         best_correlation[column] = max_corr
 
     return best_correlation
+
+
+def order_correlation(df: pd.DataFrame):
+    average_correlation = calculate_average_correlation(df)
+    return average_correlation.sort_values(axis=0, ascending=False)
+
+
+def calculate_average_correlation(df: pd.DataFrame):
+    df_corr = abs(df.corr())
+    return df_corr.mean(axis=1)
