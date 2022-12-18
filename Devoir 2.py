@@ -156,8 +156,13 @@ def get_colonnes():
     df = filled_with_regression_multiple_time(df, df_is_to_be_calculed, 2)
 
     df_as_binairies = duplicate_as_binairies_compare_to_median(df)
+
+    # question 2
     corr_temp_1 = find_biggest_correlation(df)
     corr_temp_2 = order_correlation(df)
+
+    # question3
+    # partie linéaire
 
     describe = describe_data(df)
     print(df.to_string())
