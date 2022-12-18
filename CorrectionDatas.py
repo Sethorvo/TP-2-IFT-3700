@@ -97,3 +97,12 @@ def filled_with_regression(df: pd.DataFrame, df_to_filled: pd.DataFrame):
                 df[column].iloc[i] = regression.predict([x.iloc[i, :]])[0]
 
     return df
+
+
+def duplicate_compare(df: pd.DataFrame):
+    df_duplicated = df.copy()
+    for column in df_duplicated:
+        median = df_duplicated[column].median()
+        df_duplicated[column] = df_duplicated[column] > median
+
+    return df_duplicated

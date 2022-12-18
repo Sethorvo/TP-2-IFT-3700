@@ -1,7 +1,7 @@
 import pandas as pd
 
 from CorrectionDatas import convert_data_float, clean_data, replace_missing_datas, describe_data, \
-    filled_with_regression_multiple_time
+    filled_with_regression_multiple_time, duplicate_compare
 
 # Importe le premier facile, je le garde comme fonction de test pour imprimer une colonne
 
@@ -153,6 +153,9 @@ def get_colonnes():
     df_is_to_be_calculed = df.isna()
     replace_missing_datas(df)
     df = filled_with_regression_multiple_time(df, df_is_to_be_calculed, 2)
+
+    df_as_binairies = duplicate_compare(df)
+
     describe = describe_data(df)
     print(df.to_string())
 
