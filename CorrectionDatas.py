@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from sklearn.linear_model import LinearRegression
 
 
 def read_interval(value_in_string: str):
@@ -78,3 +79,21 @@ def convert_data_float(df: pd.DataFrame):
 def describe_data(df: pd.DataFrame):
     describe = df.describe(percentiles=[0.5], include='all')
     return describe
+
+
+def filled_with_regression_multiple_time(df: pd.DataFrame, df_to_filled: pd.DataFrame, number_of_time):
+    for i in range(number_of_time):
+        df = filled_with_regression(df, df_to_filled)
+    return df
+
+
+def filled_with_regression(df: pd.DataFrame, df_to_filled: pd.DataFrame):
+    for column in df.columns:
+        y = df[column]
+        x = df.loc[:, df.columns != column]
+        regression = LinearRegression().fit(x, y)
+        for i in range(len(df.index)):
+            if df_to_filled[column].iloc[i] == True:
+                df[column].iloc[i] = regression.predict([x.iloc[i, :]])[0]
+
+    return df

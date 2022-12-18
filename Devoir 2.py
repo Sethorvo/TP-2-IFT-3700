@@ -1,6 +1,7 @@
 import pandas as pd
 
-from CorrectionDatas import convert_data_float, clean_data, replace_missing_datas, describe_data
+from CorrectionDatas import convert_data_float, clean_data, replace_missing_datas, describe_data, \
+    filled_with_regression_multiple_time
 
 # Importe le premier facile, je le garde comme fonction de test pour imprimer une colonne
 
@@ -10,50 +11,66 @@ from CorrectionDatas import convert_data_float, clean_data, replace_missing_data
 # print(m.columns)
 
 
-
 # Implementation pour les quarante liens
 # key == site, values == ( table position, column values position, column name position , ==4, ==20, == 32
 dict_wiki = {
     'https://en.wikipedia.org/wiki/List_of_countries_by_GDP_(nominal)_per_capita': (1, 6, 0, "PIB par capita"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_Internet_connection_speeds': (0, 2, 1, "Vitesse de téléchargement (Mb/s) moyenne"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_alcohol_consumption_per_capita': (0, 2, 0, "Litres d'alcool consommé par an, par capita chez 15+"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_intentional_homicide_rate': (1, 3, 0, "Homicide volontaire par 100k personnes"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_military_expenditures': (4, 2, 1,  "%PIB dépensé dans le militaire"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_Human_Development_Index': (1, 3, 2,  "Indice de développement humain"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_Internet_connection_speeds': (
+        0, 2, 1, "Vitesse de téléchargement (Mb/s) moyenne"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_alcohol_consumption_per_capita': (
+        0, 2, 0, "Litres d'alcool consommé par an, par capita chez 15+"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_intentional_homicide_rate': (
+        1, 3, 0, "Homicide volontaire par 100k personnes"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_military_expenditures': (
+        4, 2, 1, "%PIB dépensé dans le militaire"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_Human_Development_Index': (
+        1, 3, 2, "Indice de développement humain"),
     'https://en.wikipedia.org/wiki/Democracy_Index': (5, 5, 2, "Indice de démocratie"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_tertiary_education_attainment': (1, 1, 0, "% d'éducation tertiare de 2 ans atteint"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_tertiary_education_attainment': (
+        1, 1, 0, "% d'éducation tertiare de 2 ans atteint"),
     'https://en.wikipedia.org/wiki/Importance_of_religion_by_country': (4, 2, 1, "% d'importance de la religion"),
     # 'https://en.wikipedia.org/wiki/Christianity_by_country': (7, 2, 0, "% de chrétiens"),
     'https://en.wikipedia.org/wiki/Islam_by_country': (3, 3, 0, "% de musulmans"),
     'https://en.wikipedia.org/wiki/Buddhism_by_country': (0, 2, 0, "% de bouddhistes"),
     'https://en.wikipedia.org/wiki/Jewish_population_by_country': (34, -1, 0, "% de juifs"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_infant_and_under-five_mortality_rates': (0, 1, 0, "Mortalité en dessous de 5 ans (mort/1k naissance)"),
-    'https://en.wikipedia.org/wiki/Age_of_criminal_responsibility': (1, 1, 0,  "Age de responsabilité criminelle"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_infant_and_under-five_mortality_rates': (
+        0, 1, 0, "Mortalité en dessous de 5 ans (mort/1k naissance)"),
+    'https://en.wikipedia.org/wiki/Age_of_criminal_responsibility': (1, 1, 0, "Age de responsabilité criminelle"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_minimum_wage': (2, 2, 0, "Salaire minimum annuel"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_external_debt': (0, 4, 0,  "Dette externe en % de PIB"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_external_debt': (0, 4, 0, "Dette externe en % de PIB"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_income_equality': (1, 7, 0, "Indice de Gini en %"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_total_health_expenditure_per_capita': (0, 2, 0, "Dépense en santé par capita"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_suicide_rate': (1, 1, 0,  "Taux de suicide"),
-    'https://en.wikipedia.org/wiki/List_of_sovereign_states_and_dependencies_by_total_fertility_rate': (2, 2, 1, "Taux de fertilité"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_total_health_expenditure_per_capita': (
+        0, 2, 0, "Dépense en santé par capita"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_suicide_rate': (1, 1, 0, "Taux de suicide"),
+    'https://en.wikipedia.org/wiki/List_of_sovereign_states_and_dependencies_by_total_fertility_rate': (
+        2, 2, 1, "Taux de fertilité"),
     'https://en.wikipedia.org/wiki/Tobacco_consumption_by_country': (0, 1, 0, "Consommateur de tabac chez 15+"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_obesity_rate': (0, 1, 0, "Taux d'obésité"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_number_of_Internet_users': (5, -1, 0, "Taux d'utilisateur d'Internet"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_median_age': (0, 3, 0,  "Age médian"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_number_of_Internet_users': (
+        5, -1, 0, "Taux d'utilisateur d'Internet"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_median_age': (0, 3, 0, "Age médian"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_economic_freedom': (1, 2, 1, "Score de liberté économique"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_oil_production': (0, 2, 0, "Production de pétrole"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_population_growth_rate': (0, 6, 0, "Taux de croissance de population"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_population_growth_rate': (
+        0, 6, 0, "Taux de croissance de population"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_life_expectancy': (1, 1, 0, "Espérance de vie"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_meat_consumption': (1, 1, 0, "Consommation de viande en kg par capita"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_meat_consumption': (
+        1, 1, 0, "Consommation de viande en kg par capita"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_incarceration_rate': (0, 3, 0, "Taux d'incarcération par 100k"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_literacy_rate': (1, 5, 0, "Taux d'alphabétisation"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_age_at_first_marriage': (0, 2, 0, "Age de premier marriage"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_spending_on_education_(%25_of_GDP)': (0, 1, 0, "Dépense en éducation, % du PIB"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_spending_on_education_(%25_of_GDP)': (
+        0, 1, 0, "Dépense en éducation, % du PIB"),
     'https://en.wikipedia.org/wiki/List_of_countries_by_homeless_population': (0, 3, 0, "Taux d'itinérance par 100k"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_milk_consumption_per_capita': (0, 3, 2, "Consommation de lait par capita"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_number_of_scientific_and_technical_journal_articles': (0, 3, 1, "Nombre d'articles scientifique par capita"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_milk_consumption_per_capita': (
+        0, 3, 2, "Consommation de lait par capita"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_number_of_scientific_and_technical_journal_articles': (
+        0, 3, 1, "Nombre d'articles scientifique par capita"),
     'https://en.wikipedia.org/wiki/Books_published_per_country_per_year': (0, 3, 1, "Livres publiés par année"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_food_energy_intake': (0, 2, 1, "Consommation de nourriture en kilocalories"),
-    'https://en.wikipedia.org/wiki/List_of_countries_by_average_yearly_temperature': (0, 1, 0, "Température annuelle moyenne")
+    'https://en.wikipedia.org/wiki/List_of_countries_by_food_energy_intake': (
+        0, 2, 1, "Consommation de nourriture en kilocalories"),
+    'https://en.wikipedia.org/wiki/List_of_countries_by_average_yearly_temperature': (
+        0, 1, 0, "Température annuelle moyenne")
 }
 
 
@@ -83,7 +100,7 @@ def get_colonnes():
                 colonne = manquant[manquant.columns[0]]
                 colonne = colonne.truncate(0, 111)
 
-            elif values[3]== "Taux d'utilisateur d'Internet":
+            elif values[3] == "Taux d'utilisateur d'Internet":
                 colonne = manquant[manquant.columns[1]]
 
         else:
@@ -133,7 +150,9 @@ def get_colonnes():
 
     convert_data_float(df)
     df = clean_data(df)
+    df_is_to_be_calculed = df.isna()
     replace_missing_datas(df)
+    df = filled_with_regression_multiple_time(df, df_is_to_be_calculed, 2)
     describe = describe_data(df)
     print(df.to_string())
 
