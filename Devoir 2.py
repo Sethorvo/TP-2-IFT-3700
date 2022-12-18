@@ -1,7 +1,8 @@
 import pandas as pd
 
 from CorrectionDatas import convert_data_float, clean_data, replace_missing_datas, describe_data, \
-    filled_with_regression_multiple_time, duplicate_compare
+    filled_with_regression_multiple_time, duplicate_as_binairies_compare_to_median
+from Correlation import find_biggest_correlation
 
 # Importe le premier facile, je le garde comme fonction de test pour imprimer une colonne
 
@@ -154,7 +155,8 @@ def get_colonnes():
     replace_missing_datas(df)
     df = filled_with_regression_multiple_time(df, df_is_to_be_calculed, 2)
 
-    df_as_binairies = duplicate_compare(df)
+    df_as_binairies = duplicate_as_binairies_compare_to_median(df)
+    find_biggest_correlation(df)
 
     describe = describe_data(df)
     print(df.to_string())

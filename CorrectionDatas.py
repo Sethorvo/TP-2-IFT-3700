@@ -99,7 +99,7 @@ def filled_with_regression(df: pd.DataFrame, df_to_filled: pd.DataFrame):
     return df
 
 
-def duplicate_compare(df: pd.DataFrame):
+def duplicate_as_binairies_compare_to_median(df: pd.DataFrame):
     df_duplicated = df.copy()
     for column in df_duplicated:
         median = df_duplicated[column].median()
