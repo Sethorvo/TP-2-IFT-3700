@@ -24,9 +24,9 @@ def read_interval(value_in_string: str):
             values[0] = (float(newValues[0]) + float(newValues[1])) / 2
 
         # interval in %
-        if values[0][-1] == "%":
+        if isinstance(values[0], str) and values[0][-1] == "%":
             values[0] = float(values[0].rstrip('%')) / 100
-        if values[1][-1] == "%":
+        if isinstance(values[1], str) and values[1][-1] == "%":
             values[1] = float(values[1].rstrip('%')) / 100
 
         return (float(values[0]) + float(values[1])) / 2
@@ -54,15 +54,19 @@ def convert_data_float(df: pd.DataFrame):
     for column in df:
         # delete all character that made cast impossible and are not usefull
         if df[column].dtype == np.object or df[column].dtype == np.string_:
+            # special case
+            # use of federal age in usa
+            df[column] = df[column].str.replace('varies by state', '11')
+            # multiple value splint between boy and girl
+            df[column] = df[column].str.replace(' \(girls\), ', '-', regex=True)
+
             df[column] = df[column].str.rstrip('*')
             df[column] = df[column].str.rstrip('+')
             df[column] = df[column].str.replace(',000', '000', regex=True)
-            df[column] = df[column].str.replace(' \(boys\)', '', regex=True)
-            df[column] = df[column].str.replace(' \(girls\), ', '-', regex=True)
             df[column] = df[column].str.replace(r'\[.*\]', '', regex=True)
+            df[column] = df[column].str.replace(r'\(.*\)', '', regex=True)
+            df[column] = df[column].str.replace(' ', '', regex=True)
             df[column] = df[column].str.replace('−', '-', regex=True)
-            # age fédéral pour usa
-            df[column] = df[column].str.replace('varies by state', '11')
 
         is_percent = False
         for i in range(len(df.index)):
@@ -74,6 +78,9 @@ def convert_data_float(df: pd.DataFrame):
                 else:
                     # % and interval making cast impossible but some special rule as to be apply
                     df[column].iloc[i] = read_interval(df[column].iloc[i])
+
+                # format might have change, Have to check again, else it crashes
+                if isinstance(df[column].iloc[i], str):
                     is_percent = is_percent or df[column].iloc[i][-1] == "%"
 
         if is_percent:
