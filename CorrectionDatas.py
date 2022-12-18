@@ -23,6 +23,12 @@ def read_interval(value_in_string: str):
         if len(newValues) == 2:
             values[0] = (float(newValues[0]) + float(newValues[1])) / 2
 
+        # interval in %
+        if values[0][-1] == "%":
+            values[0] = float(values[0].rstrip('%')) / 100
+        if values[1][-1] == "%":
+            values[1] = float(values[1].rstrip('%')) / 100
+
         return (float(values[0]) + float(values[1])) / 2
 
     return value_in_string
@@ -67,8 +73,8 @@ def convert_data_float(df: pd.DataFrame):
                     df[column].iloc[i] = np.nan
                 else:
                     # % and interval making cast impossible but some special rule as to be apply
-                    is_percent = is_percent or df[column].iloc[i][-1] == "%"
                     df[column].iloc[i] = read_interval(df[column].iloc[i])
+                    is_percent = is_percent or df[column].iloc[i][-1] == "%"
 
         if is_percent:
             df[column] = df[column].str.rstrip('%').astype('float') / 100.0

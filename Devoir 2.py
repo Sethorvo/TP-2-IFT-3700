@@ -30,7 +30,7 @@ dict_wiki = {
     'https://en.wikipedia.org/wiki/List_of_countries_by_tertiary_education_attainment': (
         1, 1, 0, "% d'éducation tertiare de 2 ans atteint"),
     'https://en.wikipedia.org/wiki/Importance_of_religion_by_country': (4, 2, 1, "% d'importance de la religion"),
-    # 'https://en.wikipedia.org/wiki/Christianity_by_country': (7, 2, 0, "% de chrétiens"),
+    'https://en.wikipedia.org/wiki/Christianity_by_country': (7, 2, 0, "% de chrétiens"),
     'https://en.wikipedia.org/wiki/Islam_by_country': (3, 3, 0, "% de musulmans"),
     'https://en.wikipedia.org/wiki/Buddhism_by_country': (0, 2, 0, "% de bouddhistes"),
     'https://en.wikipedia.org/wiki/Jewish_population_by_country': (34, -1, 0, "% de juifs"),
