@@ -3,6 +3,7 @@ import pandas as pd
 from CorrectionDatas import convert_data_float, clean_data, replace_missing_datas, describe_data, \
     filled_with_regression_multiple_time, duplicate_as_binairies_compare_to_median
 from Correlation import find_biggest_correlation, order_correlation
+from OutputJson import list_to_json
 
 # Importe le premier facile, je le garde comme fonction de test pour imprimer une colonne
 
@@ -158,8 +159,11 @@ def get_colonnes():
     df_as_binairies = duplicate_as_binairies_compare_to_median(df)
 
     # question 2
-    corr_temp_1 = find_biggest_correlation(df)
-    corr_temp_2 = order_correlation(df)
+    biggest_corroletion_between_columns = find_biggest_correlation(df)
+    order_of_average_correlation = order_correlation(df)
+
+    list_to_json(biggest_corroletion_between_columns, "question2b")
+    list_to_json(order_of_average_correlation, "question2c")
 
     # question3
     # partie linéaire

@@ -1,9 +1,11 @@
+from typing import List
+
 import pandas as pd
 
 
-def find_biggest_correlation(df: pd.DataFrame):
+def find_biggest_correlation(df: pd.DataFrame) -> List:
     df_corr = abs(df.corr())
-    best_correlation = {}
+    best_correlation = []
 
     for column in df_corr.columns:
         max_corr = (0, 0, "")
@@ -12,16 +14,19 @@ def find_biggest_correlation(df: pd.DataFrame):
             if max_corr[0] < df_corr[column].iloc[i] and row_name != column:
                 max_corr = (df_corr[column].iloc[i], i, row_name)
 
-        best_correlation[column] = max_corr
+        best_correlation.append(max_corr[1])
 
     return best_correlation
 
 
-def order_correlation(df: pd.DataFrame):
+def order_correlation(df: pd.DataFrame) -> List:
     average_correlation = calculate_average_correlation(df)
-    return average_correlation.sort_values(axis=0, ascending=False)
+    list_of_average_correlation = average_correlation.to_numpy().tolist()
+    list_of_average_correlation = [(i, list_of_average_correlation[i]) for i in range(len(list_of_average_correlation))]
+    list_of_average_correlation.sort(key=lambda x: x[1], reverse=True)
+    return [my_truple[0] for my_truple in list_of_average_correlation]
 
 
 def calculate_average_correlation(df: pd.DataFrame):
     df_corr = abs(df.corr())
-    return df_corr.mean(axis=1)
+    return df_corr.mean(axis=0)
