@@ -1,10 +1,10 @@
 from typing import List
-
+import matplotlib.pyplot as plt
 import pandas as pd
 
 
 def find_biggest_correlation(df: pd.DataFrame) -> List:
-    df_corr = abs(df.corr())
+    df_corr = abs(df.corr(method='spearman'))
     best_correlation = []
 
     for column in df_corr.columns:
@@ -28,5 +28,15 @@ def order_correlation(df: pd.DataFrame) -> List:
 
 
 def calculate_average_correlation(df: pd.DataFrame):
-    df_corr = abs(df.corr())
+    df_corr = abs(df.corr(method='spearman'))
     return df_corr.mean(axis=0)
+
+
+def make_histogram(df: pd.DataFrame):
+    i = 1
+    for colunm in df.columns:
+        plt.hist(df[colunm])  # density=False would make counts
+        plt.title(colunm)
+        plt.savefig(f'images/corr_{i}.jpg')
+        plt.close()
+        i += 1

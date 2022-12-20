@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
@@ -91,6 +94,11 @@ def convert_data_float(df: pd.DataFrame):
 
 def describe_data(df: pd.DataFrame):
     describe = df.describe(percentiles=[0.5], include='all')
+    cwd = Path(os.getcwd())
+    file_to_save = cwd.joinpath(f'description.csv')
+
+    describe.to_csv(file_to_save, sep=';')
+
     return describe
 
 
@@ -119,3 +127,13 @@ def duplicate_as_binairies_compare_to_median(df: pd.DataFrame):
         df_duplicated[column] = df_duplicated[column] > median
 
     return df_duplicated
+
+
+def find_delete_rows(df: pd.DataFrame,olf_df: pd.DataFrame):
+    list_of_new_row = df.index.tolist()
+    list_of_deleted_rows = []
+    for row in olf_df.index:
+        if row not in list_of_new_row:
+            list_of_deleted_rows.append(row)
+
+    return len(list_of_deleted_rows)

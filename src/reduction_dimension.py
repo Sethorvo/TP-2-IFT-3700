@@ -2,16 +2,22 @@ import numpy as np
 import pandas as pd
 from sklearn.manifold import Isomap
 from matplotlib import pyplot
+from sklearn.decomposition import KernelPCA
 
 
 def execute_question4(df: pd.DataFrame):
-    questiona = calculate_isomap(df)
+    questiona = caculate_pcoa(df)
     plot_result_2d(questiona, "questiona", df.index.tolist())
 
 
 def calculate_isomap(datas, number_components=2):
     isomap = Isomap(n_components=number_components).fit(datas)
     return isomap.transform(datas)
+
+
+def caculate_pcoa(datas, number_components=2):
+    pcoa = KernelPCA(n_components=number_components).fit(datas)
+    return pcoa.transform(datas)
 
 
 def plot_result_2d(data_set, data_name, column_names):
