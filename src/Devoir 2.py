@@ -5,6 +5,7 @@ from CorrectionDatas import convert_data_float, clean_data, replace_missing_data
 from Correlation import find_biggest_correlation, order_correlation, make_histogram
 from OutputJson import list_to_json
 from reduction_dimension import execute_question4
+from src.LinearRegression import find_best_linear_regression
 
 # Importe le premier facile, je le garde comme fonction de test pour imprimer une colonne
 
@@ -172,6 +173,7 @@ def get_colonnes():
 
     # question3
     # partie linéaire
+    find_best_linear_regression(df)
 
     # question 4
     execute_question4(df)
