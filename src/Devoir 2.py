@@ -6,13 +6,6 @@ from OutputJson import list_to_json
 from reduction_dimension import execute_question4
 from src.LinearRegression import linear_regression, normalize_regression, find_best_linear_regression
 from BayesClassifier import get_bayes_prediction_scores, get_best_pair_for_each, get_best_two
-# Importe le premier facile, je le garde comme fonction de test pour imprimer une colonne
-
-# url = "https://en.wikipedia.org/wiki/List_of_countries_by_number_of_Internet_users"
-# table = pd.read_html(url)[5]
-# m = pd.read_csv("tableau.csv")
-# print(m.columns)
-
 
 # Implementation pour les quarante liens
 # key == site, values == ( table position, column values position, column name position , ==4, ==20, == 32
