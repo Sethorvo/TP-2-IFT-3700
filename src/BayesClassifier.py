@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 import numpy as np
-from sklearn.naive_bayes import MultinomialNB, GaussianNB
+from sklearn.naive_bayes import MultinomialNB
 from sklearn import metrics
 
 
@@ -34,5 +34,18 @@ def get_best_pair_for_each(score_matrix):
 # 3. c)
 def get_best_two(score_matrix):
     # do this in order to ignore the diagonal of the matrix
-    np.fill_diagonal(score_matrix, -1)
-    return np.argpartition(score_matrix, axis=1)[:, 0:2]
+    np.fill_diagonal(score_matrix, 0)
+    mean_scores = np.mean(score_matrix, axis=1)
+
+    return np.argpartition(mean_scores, axis=0)[0:2,:]
+
+
+def test():
+    countries = np.random.rand(10,40)
+    predictions = get_bayes_prediction_scores(countries, 0.8)
+    print( predictions )
+    print(get_best_pair_for_each(predictions))
+    print(get_best_two(predicitons))
+
+test()
+
