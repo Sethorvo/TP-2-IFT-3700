@@ -37,24 +37,18 @@ def find_best_linear_regression(df: pd.DataFrame):
         columns_to_evaluate = df.columns.tolist().copy()
         columns_to_evaluate.remove(column)
         column_bloc_2 = columns_to_evaluate.copy()
-        best_colunm = (0, "", "")
+        best_column = (0, "", "")
 
         for column1 in columns_to_evaluate:
             column_bloc_2.remove(column1)
             for column2 in column_bloc_2:
                 x = df.loc[:, [column1, column2]]
-                data_point_x, data_point_x_test, data_point_y, data_point_y_test = train_test_split(x, y, test_size=0.4)
-                regression = sm.OLS(data_point_y, data_point_x).fit()
-                predictions = regression.predict(data_point_x_test)
-                error = sum([pow((predictions[i] - data_point_y_test[i]), 2) for i in range(len(predictions))])
-                mean_of_test = data_point_y_test.mean()
-                diff_to_mean = sum(
-                    [pow((data_point_y_test[i] - mean_of_test), 2) for i in range(len(data_point_y_test))])
-                r_out = 1 - (error / diff_to_mean)
-                if best_colunm[0] < r_out:
-                    best_colunm = (r_out, column1, column2)
+                regression = sm.OLS(y, x).fit()
 
-        list_of_best_column.append(best_colunm)
+                if best_column[0] < regression.rsquared:
+                    best_column = (regression.rsquared, column1, column2)
+
+        list_of_best_column.append(best_column)
 
     columns_to_evaluate = df.columns.tolist().copy()
     list_of_int = []
