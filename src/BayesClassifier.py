@@ -10,17 +10,16 @@ from sklearn import metrics
 # 3. a)
 # return_matrix[i][j] returns the accuracy score if you use naive bayes to
 # predict column j with column i of data array (countries)
-def get_bayes_prediction_scores(data: np.array, split: float):
+def get_bayes_prediction_scores(data, split):
     return_matrix = np.copy(data)
-    nb_test = int(split * data.shape[0])  # for train / test split
-    print(nb_test)
+    nb_test = int(data.shape[0] * split)  # for train / test split
     return_matrix = return_matrix * 0  # set all elements to zero
-    bayes_classifier = GaussianNB()  # initiate gaussian bayes classifier
+    bayes_classifier = MultinomialNB()  # initiate gaussian bayes classifier
     for i in range(return_matrix.shape[0]):
         for j in range(return_matrix.shape[1]):
-            bayes_classifier.fit(data[0:nb_test, i], data[0:nb_test, j])
-            prediction = bayes_classifier.predict(data[nb_test:, j])
-            return_matrix[i][j] = metrics.accuracy(prediction, data[nb_test:, j])
+            bayes_classifier.fit(data[0:nb_test, i].reshape(-1, 1), data[0:nb_test, j].reshape(-1, 1))
+            prediction = bayes_classifier.predict(data[nb_test:, j].reshape(-1, 1))
+            return_matrix[i][j] = metrics.accuracy_score(prediction, data[nb_test:, j])
     return return_matrix
 
 
@@ -28,7 +27,7 @@ def get_bayes_prediction_scores(data: np.array, split: float):
 def get_best_pair_for_each(score_matrix):
     # do this in order to ignore the diagonal of the matrix
     np.fill_diagonal(score_matrix, -1)
-    return np.argpartition(score_matrix, axis=0)[0:2, :]
+    return np.argsort(score_matrix, axis=0)[0:2, :].T
 
 
 # 3. c)
@@ -36,16 +35,15 @@ def get_best_two(score_matrix):
     # do this in order to ignore the diagonal of the matrix
     np.fill_diagonal(score_matrix, 0)
     mean_scores = np.mean(score_matrix, axis=1)
-
-    return np.argpartition(mean_scores, axis=0)[0:2,:]
+    return np.argsort(mean_scores, axis=0)[0:2]
 
 
 def test():
-    countries = np.random.rand(10,40)
+    countries = np.random.randint(5, size=(4, 8))
     predictions = get_bayes_prediction_scores(countries, 0.8)
     print( predictions )
     print(get_best_pair_for_each(predictions))
-    print(get_best_two(predicitons))
+    print(get_best_two(predictions))
 
 test()
 
