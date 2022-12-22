@@ -37,6 +37,6 @@ def make_histogram(df: pd.DataFrame):
     for colunm in df.columns:
         plt.hist(df[colunm])  # density=False would make counts
         plt.title(colunm)
-        plt.savefig(f'images/corr_{i}.jpg')
+        plt.savefig(f'../images/corr_{i}.jpg')
         plt.close()
         i += 1

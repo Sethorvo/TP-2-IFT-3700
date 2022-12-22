@@ -33,4 +33,4 @@ def normalize_regression(df: pd.DataFrame):
         params[column] = regression.params
 
     df_temp = pd.DataFrame(params)
-    df_temp.to_csv('params.csv')
+    df_temp.to_csv('../params.csv')
