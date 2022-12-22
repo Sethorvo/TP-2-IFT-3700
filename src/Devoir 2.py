@@ -4,7 +4,7 @@ from CorrectionDatas import convert_data_float, clean_data, replace_missing_data
 from Correlation import find_biggest_correlation, order_correlation, make_histogram
 from OutputJson import list_to_json
 from reduction_dimension import execute_question4
-from src.LinearRegression import find_best_linear_regression, normalize_regression
+from src.LinearRegression import linear_regression, normalize_regression, find_best_linear_regression
 from BayesClassifier import get_bayes_prediction_scores, get_best_pair_for_each, get_best_two
 # Importe le premier facile, je le garde comme fonction de test pour imprimer une colonne
 
@@ -86,7 +86,7 @@ def get_colonnes():
     labels = labels.truncate(1)
     df.index = labels
 
-    manquant = pd.read_csv("../tableau.csv")
+    manquant = pd.read_csv("tableau.csv")
 
     for key, values in dict_wiki.items():
         url = key
@@ -162,36 +162,38 @@ def get_colonnes():
     df = filled_with_regression_multiple_time(df, df_is_to_be_calculed, 2)
 
     df_as_binairies = duplicate_as_binairies_compare_to_median(df)
-
-    # question 2
-    biggest_corroletion_between_columns = find_biggest_correlation(df)
-    order_of_average_correlation = order_correlation(df)
-
-    list_to_json(biggest_corroletion_between_columns, "question2b")
-    list_to_json(order_of_average_correlation, "question2c")
+    #
+    # # question 2
+    # biggest_corroletion_between_columns = find_biggest_correlation(df)
+    # order_of_average_correlation = order_correlation(df)
+    #
+    # list_to_json(biggest_corroletion_between_columns, "question2b")
+    # list_to_json(order_of_average_correlation, "question2c")
 
     # question3
     # partie linéaire
-    find_best_linear_regression(df)
+    linear_regression(df)
+    list_of_best_pair = find_best_linear_regression(df)
+    list_to_json(list_of_best_pair, "question3b_linear")
     normalize_regression(df)
-    # a) 
-    
-
-    #partie bayésienne
-    np_df = df.to_numpy()
-    score_bayes = get_bayes_prediction_scores(np_df, 0.8)
-
-    bayes_b = get_best_pair_for_each(score_bayes)
-    bayes_c = get_best_two(score_bayes)
-
-    list_to_json(bayes_b, "question3b bayes")
+    # a)
 
 
-    # question 4
-    execute_question4(df)
-
-    describe = describe_data(df)
-    print(df.to_string())
+    # #partie bayésienne
+    # np_df = df.to_numpy()
+    # score_bayes = get_bayes_prediction_scores(np_df, 0.8)
+    #
+    # bayes_b = get_best_pair_for_each(score_bayes)
+    # bayes_c = get_best_two(score_bayes)
+    #
+    # list_to_json(bayes_b, "question3b_bayes")
+    #
+    #
+    # # question 4
+    # execute_question4(df)
+    #
+    # describe = describe_data(df)
+    # print(df.to_string())
 
 
 if __name__ == '__main__':
