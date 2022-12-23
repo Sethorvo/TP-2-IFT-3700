@@ -14,8 +14,8 @@ def get_bayes_prediction_scores(data, split):
     return_matrix = np.copy(data)
     nb_test = int(data.shape[0] * split)  # for train / test split
     return_matrix = return_matrix * 0  # set all elements to zero
-    bayes_classifier = MultinomialNB()  # initiate gaussian bayes classifier
-    for i in range(return_matrix.shape[0]):
+    bayes_classifier = MultinomialNB()  # initiate multinomial bayes classifier
+    for i in range(return_matrix.shape[1]):
         for j in range(return_matrix.shape[1]):
             bayes_classifier.fit(data[0:nb_test, i].reshape(-1, 1), data[0:nb_test, j].reshape(-1, 1))
             prediction = bayes_classifier.predict(data[nb_test:, j].reshape(-1, 1))
@@ -45,5 +45,4 @@ def test():
     print(get_best_pair_for_each(predictions))
     print(get_best_two(predictions))
 
-test()
 
