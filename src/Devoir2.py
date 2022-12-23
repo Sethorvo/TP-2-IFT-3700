@@ -4,7 +4,7 @@ from CorrectionDatas import convert_data_float, clean_data, replace_missing_data
 from Correlation import find_biggest_correlation, order_correlation, make_histogram
 from OutputJson import list_to_json
 from reduction_dimension import execute_question4
-from src.LinearRegression import linear_regression, normalize_regression, find_best_linear_regression
+from LinearRegression import linear_regression, normalize_regression, find_best_linear_regression
 from BayesClassifier import get_bayes_prediction_scores, get_best_pair_for_each, get_best_two
 
 # Implementation pour les quarante liens
