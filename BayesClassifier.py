@@ -18,7 +18,7 @@ def get_bayes_prediction_scores(data, split):
     for i in range(return_matrix.shape[1]):
         for j in range(return_matrix.shape[1]):
             bayes_classifier.fit(data[0:nb_test, i].reshape(-1, 1), data[0:nb_test, j].reshape(-1, 1))
-            prediction = bayes_classifier.predict(data[nb_test:, i].reshape(-1, 1))
+            prediction = bayes_classifier.predict(data[nb_test:, j].reshape(-1, 1))
             return_matrix[i][j] = metrics.accuracy_score(prediction, data[nb_test:, j])
     return return_matrix
 
@@ -27,7 +27,7 @@ def get_bayes_prediction_scores(data, split):
 def get_best_pair_for_each(score_matrix):
     # do this in order to ignore the diagonal of the matrix
     np.fill_diagonal(score_matrix, -1)
-    return np.argsort(score_matrix, axis=0)[0:2, :].T
+    return np.argsort(score_matrix, axis=0)[-2:, :].T
 
 
 # 3. c)
@@ -35,4 +35,4 @@ def get_best_two(score_matrix):
     # do this in order to ignore the diagonal of the matrix
     np.fill_diagonal(score_matrix, 0)
     mean_scores = np.mean(score_matrix, axis=1)
-    return np.argsort(mean_scores, axis=0)[0:2]
+    return np.argsort(mean_scores, axis=0)[-2:]
