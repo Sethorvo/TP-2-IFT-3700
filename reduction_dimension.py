@@ -38,10 +38,10 @@ def caculate_pcoa(datas, number_components=2):
 
 def plot_result_2d(data_set, data_name, column_names):
     # big  image to be able to read something
-    fig = pyplot.figure(figsize=(384, 216), dpi=100)
+    #fig = pyplot.figure(figsize=(384, 216), dpi=100)
 
     # # low quality image to be able to see the bigger picture
-    # fig = pyplot.figure()
+    fig = pyplot.figure()
     ax = fig.add_subplot()
     ax.set_title(data_name)
     x = [tuple_[0] for tuple_ in data_set]
