@@ -11,7 +11,7 @@ from sklearn import metrics
 # return_matrix[i][j] returns the accuracy score if you use naive bayes to
 # predict column j with column i of data array (countries)
 def get_bayes_prediction_scores(data, split):
-    return_matrix = np.copy(data)
+    return_matrix = np.zeros(shape = (data.shape[1],data.shape[1]))
     nb_test = int(data.shape[0] * split)  # for train / test split
     return_matrix = return_matrix * 0  # set all elements to zero
     bayes_classifier = MultinomialNB()  # initiate multinomial bayes classifier
@@ -46,3 +46,4 @@ def test():
     print(get_best_two(predictions))
 
 
+test()
